@@ -4,21 +4,104 @@
     <meta charset="utf-8">
     <title>Form data</title>
     <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </head>
   <body>
 
+  <div class="container">
 
+    <h1>Form insert Data</h1>
+
+      <div id="form-data">
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="date" class="form-control" id="date_input">
+        </div>
+        <div class="form-group">
+          <label for="frequency">frequency</label>
+          <input type="text" class="form-control" id="frequency_input" placeholder="10">
+        </div>
+        <button type="submit" class="btn btn-default" onclick="insertData()">Submit</button>
+      </div>
+
+    <div id="list-data">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <td>ID</td>
+            <td>Date</td>
+            <td>Frequency</td>
+            <td>Option</td>
+          </tr>
+        </thead>
+        <tbody>
+          <div id="list-data-data"></div>
+        </tbody>
+
+      </table>
+    </div>
+
+  </div> <!-- end class container -->
 
   <!-- script and jquery -->
   <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.1.1.min.js"></script>
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <!-- jquery ajax -->
+  <!-- <script src="../js/index.js" charset="utf-8"></script> -->
   <script type="text/javascript">
+  /* main function */
+  $( document ).ready(function() {
+    $('#updateButton').hide()
+    $.ajax({
+      url:  "http://localhost:3000/api/data",
+      method: 'get',
+      contentType: 'application/x-www-form-urlencoded',
+      success: function(data) {
+        console.log(data)
+        var dataHTML
+        for(var i = 0; i < data.length; i++){
+          dataHTML += `<tr id="data${data[i]._id}">
+          <td class="id-data">${data[i]._id}</td>
+          <td class="date-data">${data[i].date}</td>
+          <td class="frequency-data">${data[i].frequency}</td>
+          <td><button id="edit${data[i]._id}" type="button" class="btn btn-warning" onclick="passingDataToInput('${data[i]._id}')">Edit</button></td>
+          <td><button type="button" class="btn btn-danger" onclick="deleteData( '${data[i]._id}' )">Delete</button></td>
+          </tr>`
+        }
+        $('#list-data-data').append(dataHTML)
+      }
+    })
+  }) // main function, the main function is always start when browser open
+
+  /* insert function */
+  function insertData(){
+    $.ajax({
+      url:  "http://localhost:3000/api/data",
+      method: 'post',
+      data : {
+        date_input : $('#form-data #date_input').val(),
+        frequency_input : $('#form-data #frequency_input').val()
+        // id_input : $('#form-data #id_input').val()
+      },
+      contentType: 'application/x-www-form-urlencoded',
+      success: function(data) {
+        console.log(data)
+        var dataHTML
+          dataHTML += `<tr id="data${data.id}">
+          <td class="id-data">${data._id}</td>
+          <td class="date-data">${data.date}</td>
+          <td class="frequency-data">${data.frequency}</td>
+          <td><button id="edit${data._id}" type="button" class="btn btn-warning" onclick="passingDataToInput('${data._id}')">Edit</button></td>
+          <td><button type="button" class="btn btn-danger" onclick=" deleteData( '${data._id}' )" >Delete</button></td>
+          </tr>`
+        $('#list-data-data').append(dataHTML)
+      }
+    })
+  } // insert function
 
   </script>
   </body>
