@@ -17,7 +17,8 @@ let logout = function(req, res, next){
 
 // function to render home page
 let home = function(req, res, next){
-  console.log(req.session.valid);
+  console.log("userid : " +  req.session.userid);
+  console.log("valid : " + req.session.valid);
   res.render('home');
 }
 
@@ -28,14 +29,17 @@ let formLogin = function(req, res, next){
 
 // function to login and create session customer
 let login = function(req, res, next){
-  req.session.save(function(err){
+  req.session.save(function(err, data){
     if(err){
       console.log(err);
     }else{
       // var string = encodeURIComponent('something that would break');
       // res.redirect('http://127.0.0.1:8080/' + string);
+      console.log("data : " + data);
+      // req.session.userid = data._id;
       req.session.valid = true;
-      res.redirect('home');
+      // res.redirect('home');
+      res.render('home')
     }
   })
 }
