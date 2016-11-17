@@ -3,7 +3,7 @@
 var express = require('express');
 var router = express.Router();
 const controllerCustomer = require('../controller/controller.customer');
-const controllerData = require('../controller/controller.customer');
+const controllerData = require('../controller/controller.data');
 const passport = require('passport');
 const middleware = require('../helper/middleware');
 
@@ -20,9 +20,9 @@ router.get('/customer/home', middleware.checkStillLogin ,controllerCustomer.home
 router.get('/data', middleware.checkStillLogin, controllerData.getAllData);
 router.post('/data', middleware.checkStillLogin, controllerData.insertData);
 router.get('/data/formData', middleware.checkStillLogin, controllerData.formData);
-router.get('/data', middleware.checkStillLogin, controllerData.findOneData);
-router.get('/data', middleware.checkStillLogin, controllerData.deleteData);
-router.get('/data', middleware.checkStillLogin, controllerData.editData);
+router.get('/data/:id', middleware.checkStillLogin, controllerData.findOneData);
+router.delete('/data', middleware.checkStillLogin, controllerData.deleteData);
+router.put('/data', middleware.checkStillLogin, controllerData.editData);
 
 
 

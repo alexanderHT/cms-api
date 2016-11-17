@@ -14,7 +14,7 @@ var api = require('./routes/api');
 var app = express();
 
 // setup mongoose database / tell where your database name *
-mongoose.connect('mongodb://localhost/latihan_passport');
+mongoose.connect('mongodb://localhost/db_cms_api');
 mongoose.Promise = global.Promise;
 
 // req models for auth local *
@@ -36,11 +36,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // set session *
 app.use(session({
-  secret : 'session',
+  secret : 'hacktiv8',
   resave : false,
   saveUninitialized : false,
   cookie : {
-    maxAge : 60000
+    maxAge : 600000
   }
 }))
 

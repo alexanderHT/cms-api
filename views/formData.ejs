@@ -7,10 +7,43 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
-
   </head>
   <body>
 
+  <!-- modal -->
+  <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div id="input-form-edit"></div>
+      <!-- <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+    </div>
+  </div>
+  </div>
+  <!-- modal -->
+
+  <!-- nav -->
+  <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/api/customer/home">Home</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li><a href="/api/data/formData">Form Data</a></li>
+      <li><a href="/api/customer/logout">Log Out</a></li>
+    </ul>
+  </div>
+</nav>
+  <!-- nav -->
   <div class="container">
 
     <h1>Form insert Data</h1>
@@ -18,31 +51,29 @@
       <div id="form-data">
         <div class="form-group">
           <label for="date">Date</label>
-          <input type="date" class="form-control" id="date_input">
+          <input type="datetime-local" class="form-control" id="date_input">
         </div>
         <div class="form-group">
           <label for="frequency">frequency</label>
-          <input type="text" class="form-control" id="frequency_input" placeholder="10">
+          <input type="number" class="form-control" id="frequency_input" placeholder=" Ex : 10">
         </div>
         <button type="submit" class="btn btn-default" onclick="insertData()">Submit</button>
       </div>
 
-    <div id="list-data">
-      <table class="table table-striped">
+      <table class="table table-bordered" style="margin-top: 15px;">
         <thead>
           <tr>
-            <td>ID</td>
-            <td>Date</td>
-            <td>Frequency</td>
-            <td>Option</td>
+            <th>Date</th>
+            <th>frequency</th>
+            <th>Edit</th>
+            <th>Delete</th>
           </tr>
         </thead>
-        <tbody>
-          <div id="list-data-data"></div>
+        <tbody id="list-data-data">
         </tbody>
 
       </table>
-    </div>
+
 
   </div> <!-- end class container -->
 
@@ -55,24 +86,25 @@
   <script type="text/javascript">
   /* main function */
   $( document ).ready(function() {
-    $('#updateButton').hide()
     $.ajax({
       url:  "http://localhost:3000/api/data",
       method: 'get',
       contentType: 'application/x-www-form-urlencoded',
       success: function(data) {
         console.log(data)
-        var dataHTML
+        let list_data = "";
         for(var i = 0; i < data.length; i++){
-          dataHTML += `<tr id="data${data[i]._id}">
-          <td class="id-data">${data[i]._id}</td>
-          <td class="date-data">${data[i].date}</td>
-          <td class="frequency-data">${data[i].frequency}</td>
-          <td><button id="edit${data[i]._id}" type="button" class="btn btn-warning" onclick="passingDataToInput('${data[i]._id}')">Edit</button></td>
-          <td><button type="button" class="btn btn-danger" onclick="deleteData( '${data[i]._id}' )">Delete</button></td>
-          </tr>`
+          list_data +=
+          `
+          <tr id="data${data[i]._id}">
+            <td class="date-data">${data[i].date}</td>
+            <td class="frequency-data">${data[i].frequency}</td>
+            <td><button id="edit${data[i]._id}" type="button" class="btn btn-warning" onclick="preEdit('${data[i]._id}')">Edit</button></td>
+            <td><button type="button" class="btn btn-danger" onclick="deleteData( '${data[i]._id}' )">Delete</button></td>
+          </tr>
+          `
         }
-        $('#list-data-data').append(dataHTML)
+        $('#list-data-data').append(list_data)
       }
     })
   }) // main function, the main function is always start when browser open
@@ -89,19 +121,99 @@
       },
       contentType: 'application/x-www-form-urlencoded',
       success: function(data) {
-        console.log(data)
-        var dataHTML
-          dataHTML += `<tr id="data${data.id}">
-          <td class="id-data">${data._id}</td>
+        let list_data = "";
+        list_data +=
+        `
+        <tr id="data${data._id}">
           <td class="date-data">${data.date}</td>
           <td class="frequency-data">${data.frequency}</td>
-          <td><button id="edit${data._id}" type="button" class="btn btn-warning" onclick="passingDataToInput('${data._id}')">Edit</button></td>
-          <td><button type="button" class="btn btn-danger" onclick=" deleteData( '${data._id}' )" >Delete</button></td>
-          </tr>`
-        $('#list-data-data').append(dataHTML)
+          <td><button id="edit${data._id}" type="button" class="btn btn-warning" onclick="preEdit('${data._id}')">Edit</button></td>
+          <td><button type="button" class="btn btn-danger" onclick="deleteData( '${data._id}' )">Delete</button></td>
+        </tr>
+        `;
+        $('#list-data-data').append(list_data);
       }
     })
   } // insert function
+
+  /* get one data and show to modal */
+  function preEdit(id){
+    $.ajax({
+      url:  `http://localhost:3000/api/data/${id}`,
+      method: 'get',
+      contentType: 'application/x-www-form-urlencoded',
+      success: function(data) {
+        $('#remove-modal-detail').remove();
+        let editHTML = "";
+        editHTML +=
+        `
+        <div id="remove-modal-detail">
+        <div class="container">
+        <div class="form-group">
+          <label for="date">Date</label>
+          <input type="datetime-local" class="form-control" id="edit-input-date" value="${data.date}" />
+        </div>
+        <div class="form-group">
+          <label for="frequency">frequency</label>
+          <input type="number" class="form-control" id="edit-input-frequency" value="${data.frequency}" placeholder=" Ex : 10"/>
+        </div>
+        </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="editData('${data._id}')">Edit</button>
+          </div>
+        </div>
+        `
+        $('#input-form-edit').append(editHTML);
+        $('#editModal').modal('show');
+      }
+    })
+  }
+
+  /* edit data */
+  function editData(id){
+    $.ajax({
+      url:  `http://localhost:3000/api/data`,
+      method: 'put',
+      contentType: 'application/x-www-form-urlencoded',
+      data : {
+        edit_id : id,
+        edit_date : $('#edit-input-date').val(),
+        edit_frequency : $('#edit-input-frequency').val()
+      },
+      success: function(data) {
+        console.log(data);
+        $(`#data${data._id}`).remove();
+        let editHTML = "";
+        editHTML +=
+        `
+        <tr id="data${data._id}">
+          <td class="date-data">${data.date}</td>
+          <td class="frequency-data">${data.frequency}</td>
+          <td><button id="edit${data._id}" type="button" class="btn btn-warning" onclick="preEdit('${data._id}')">Edit</button></td>
+          <td><button type="button" class="btn btn-danger" onclick="deleteData( '${data._id}' )">Delete</button></td>
+        </tr>
+        `
+        $('#list-data-data').append(editHTML);
+        $('#editModal').modal('hide');
+      }
+    })
+  }
+
+  /* delete data */
+  function deleteData(id){
+    $.ajax({
+      url:  "http://localhost:3000/api/data",
+      method: 'delete',
+      data : {
+        data_id : id
+      },
+      contentType: 'application/x-www-form-urlencoded',
+      success: function(data) {
+        $(`#data${data._id}`).remove();
+      }
+    })
+  }
 
   </script>
   </body>

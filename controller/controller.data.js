@@ -10,10 +10,12 @@ module.exports = {
   },
   // insert new data
   insertData : function(req, res, next){
+    console.log(req.body);
     var newData = datas({
       date: req.body.date_input,
-      frequency: req.body.frequency,
-      customer: req.body.customer_id
+      frequency: req.body.frequency_input,
+      customer: "582d58f3eeb659294fc9ff8d"
+      // customer: req.body.customer_id
     });
 
     // save the data
@@ -24,24 +26,24 @@ module.exports = {
   },
   // find one data
   findOneData : function(req, res, next){
-    datas.find({ _id = req.body.data_id }, function(err, data) {
+    console.log("data masuk " + req.params.id);
+    datas.findOne({ _id : req.params.id }, function(err, data) {
       if (err) throw err;
-
-      res.json(data)
+      console.log(data);
+      res.json(data);
     });
   },
   // delete one data
   deleteData : function(req, res, next){
-    User.findOneAndRemove({ _id: req.body.data_id }, function(err, data) {
+    datas.findOneAndRemove({ _id: req.body.data_id }, function(err, data) {
       if (err) throw err;
-
       res.json(data);
-
     });
   },
   // edit data
   editData : function(req, res, next){
-    User.findOneAndUpdate({ _id: req.body.data_id }, { date: req.body.date_input, frequency: req.body.frequency  }, function(err, data) {
+    console.log(req.body);
+    datas.findOneAndUpdate({ _id: req.body.edit_id }, { date: req.body.edit_date, frequency: req.body.edit_frequency  }, { new : true }, function(err, data) {
       if (err) throw err;
 
       // we have the updated user returned to us
