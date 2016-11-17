@@ -3,11 +3,31 @@
   <head>
     <meta charset="utf-8">
     <title>home</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <style media="screen">
+      #menu-option{
+        width: 300px;
+        margin-top: 35%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .btn{
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
-    <p>
-      sudah login neh
-    </p>
-    <a href="/api/customer/logout">log out</a>
+    <div id="menu-option">
+
+      <div class="text-center">
+        <a href="/api/data/formData"><button type="button" name="button" class="btn btn-default">Go to data form</button></a><br><br>
+        <a href="/api/customer/logout"><button type="button" name="button" class="btn btn-danger">log out</button></a>
+      </div>
+
+    </div>
+
   </body>
 </html>
